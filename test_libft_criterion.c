@@ -6,11 +6,11 @@
 /*   By: lboertie <lboertie@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/06 12:53:18 by lboertie       #+#    #+#                */
-/*   Updated: 2019/11/06 20:06:32 by lboertie      ########   odam.nl         */
+/*   Updated: 2019/11/06 20:39:53 by lboertie      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libft.h>
+#include "../libft/libft.h"
 #include <criterion/criterion.h>
 #include <limits.h>
 #include <string.h>
@@ -169,7 +169,7 @@ Test(convert, itoa) {
 	int n = 0;
 	cr_expect_str_eq("0", ft_itoa(n), \
 	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
-	n = MIN_INT;
+	n = INT_MIN;
 	cr_expect_str_eq("-2147483648", ft_itoa(n), \
 	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
 	n = INT_MAX;
