@@ -11,7 +11,7 @@ like this:
 |-you, typing the command below
 
 
-compile with 'gcc test_libft_criterion.c -Llibft -lft -lcriterion
+compile with 'gcc libft_criterion_test/test_libft_criterion.c -Llibft -lft -lcriterion
 
 PART 1:
 currently it tests:
