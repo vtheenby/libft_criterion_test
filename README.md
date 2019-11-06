@@ -27,6 +27,7 @@ isascii
 isprint
 toupper
 tolower
+strnstr
 
 todo:
 memset
@@ -38,7 +39,6 @@ memchr
 memcmp
 strlcpy
 strlcat
-strnstr
 calloc
 strdup
 

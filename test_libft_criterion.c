@@ -6,11 +6,11 @@
 /*   By: lboertie <lboertie@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/06 12:53:18 by lboertie       #+#    #+#                */
-/*   Updated: 2019/11/06 20:39:53 by lboertie      ########   odam.nl         */
+/*   Updated: 2019/11/06 22:11:28 by lboertie      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft/libft.h"
+#include <libft.h>
 #include <criterion/criterion.h>
 #include <limits.h>
 #include <string.h>
@@ -169,7 +169,7 @@ Test(convert, itoa) {
 	int n = 0;
 	cr_expect_str_eq("0", ft_itoa(n), \
 	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
-	n = INT_MIN;
+	n = MIN_INT;
 	cr_expect_str_eq("-2147483648", ft_itoa(n), \
 	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
 	n = INT_MAX;
@@ -224,4 +224,23 @@ Test(str, strrchr_null, .signal = SIGSEGV) {
 	char c = 'x';
 	cr_expect_str_eq(ft_strrchr(str, c), \
 	"ft_strrchr does not segfault with input NULL");
+}
+
+Test(str, strnstr) {
+	char *str = "we're about to go searching in this hecking string\0DONOTSEARCHHERE";
+	char *str1 = "this";
+	cr_expect_str_eq(strnstr(str, str1, strlen(str)), strnstr(str, str1, strlen(str)), \
+	"values passed: [%s|%s|%lu]\nlibc: %s\nlibft: %s", str, str1, strlen(str), strnstr(str, str1, strlen(str)), ft_strnstr(str, str1, strlen(str)));
+	cr_expect_null(ft_strnstr(str, str1, 20), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", str, str1, 20, strnstr(str, str1, 20), ft_strnstr(str, str1, 20));
+	cr_expect_null(ft_strnstr(str, str1, 0), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", str, str1, 0, strnstr(str, str1, 0), ft_strnstr(str, str1, 0));
+	str1 = "DONOT";
+	cr_expect_null(ft_strnstr(str, str1, 65), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", str, str1, 65, strnstr(str, str1, 65), ft_strnstr(str, str1, 65));
+}
+
+Test(str, strnstr_null, .signal = SIGSEGV) {
+	char *str = NULL;
+	ft_strnstr(str, str, 20);
 }
