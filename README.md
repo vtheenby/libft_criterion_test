@@ -2,11 +2,13 @@
 tests for libft (criterion required)
 clone next to your libft folder, with libft.a compiled
 like this:
+
 |-libft
 |
 |-libft_criterion_test
 |
 |-you, typing the command below
+
 compile with 'gcc test_libft_criterion.c -Llibft -lft -lcriterion
 
 PART 1:
