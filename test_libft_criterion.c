@@ -6,7 +6,7 @@
 /*   By: lboertie <lboertie@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/06 12:53:18 by lboertie       #+#    #+#                */
-/*   Updated: 2019/11/07 16:40:25 by lboertie      ########   odam.nl         */
+/*   Updated: 2019/11/07 16:44:15 by lboertie      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -451,4 +451,9 @@ Test(mem, memcpy) {
 Test(mem, memcpy_null, .signal = SIGSEGV) {
 	char *str = strdup("string");
 	ft_memcpy(str, NULL, 6);
+}
+
+
+Test(mem, memccpy, .signal = SIGSEGV) {
+	ft_memccpy(NULL, NULL, 'a', 6);
 }
