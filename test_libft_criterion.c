@@ -6,7 +6,7 @@
 /*   By: lboertie <lboertie@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/06 12:53:18 by lboertie       #+#    #+#                */
-/*   Updated: 2019/11/06 22:11:28 by lboertie      ########   odam.nl         */
+/*   Updated: 2019/11/07 16:40:25 by lboertie      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,10 @@ Test(str, strncmp) {
 	"values passed: [NULL|NULL|0]\nlibc: %d\nlibft: %d", strncmp(NULL, NULL, 0), ft_strncmp(NULL, NULL, 0));
 }
 
+Test(str, strncmp_null, .signal = SIGSEGV) {
+	ft_strncmp(NULL, "str", 4);
+}
+
 Test(convert, atoi) {
 	char *str = "";
 	cr_expect_eq(atoi(str), ft_atoi(str), \
@@ -243,4 +247,208 @@ Test(str, strnstr) {
 Test(str, strnstr_null, .signal = SIGSEGV) {
 	char *str = NULL;
 	ft_strnstr(str, str, 20);
+}
+
+Test(str, strlcpy) {
+	char *str = malloc(sizeof(char) * 10 + 1);
+	char *str1 = malloc(sizeof(char) * 10 + 1);
+	size_t ret = 0;
+	size_t ret1 = 0;
+	ret = strlcpy(str, "0123456789", 10);
+	ret1 = ft_strlcpy(str1, "0123456789", 10);
+	cr_expect_str_eq(str, str1, \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", str, "0123456789", 10, str, str1);
+	cr_expect_eq(ret, ret1, \
+	"values passed: [%s|%s|%d]\nlibc: %zu\nlibft: %zu", str, "0123456789", 10, ret, ret1);
+	ret = strlcpy(str, "0123456789", 0);
+	ret1 = ft_strlcpy(str1, "0123456789", 0);
+	cr_expect_str_eq(str, str1, \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", str, "0123456789", 0, str, str1);
+	cr_expect_eq(ret, ret1, \
+	"values passed: [%s|%s|%d]\nlibc: %zu\nlibft: %zu", str, "0123456789", 10, ret, ret1);
+	ret = strlcpy(str, "0123456789", 20);
+	ret1 = ft_strlcpy(str1, "0123456789", 20);
+	cr_expect_str_eq(str, str1, \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", str, "0123456789", 20, str, str1);
+	cr_expect_eq(ret, ret1, \
+	"values passed: [%s|%s|%d]\nlibc: %zu\nlibft: %zu", str, "0123456789", 10, ret, ret1);
+	free(str);
+	free(str1);
+}
+
+Test(str, strlcpy_null, .signal = SIGSEGV) {
+	ft_strlcpy(NULL, NULL, 6);
+}
+
+Test(str, strlcat) {
+	char *str = strdup("start");
+	char *str1 = strdup("start");
+	char *app = "append";
+	size_t ret = 0;
+	size_t ret1 = 0;
+	ret = strlcat(str, app, 11);
+	ret1 = ft_strlcat(str1, app, 11);
+	cr_expect_str_eq(str, str1, \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", str, app, 11, str, str1);
+	cr_expect_eq(ret, ret1, \
+	"values passed: [%s|%s|%d]\nlibc: %zu\nlibft: %zu", str, app, 11, ret, ret1);
+	ret = strlcat(str, app, 0);
+	ret1 = ft_strlcat(str1, app, 0);
+	cr_expect_str_eq(str, str1, \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", str, app, 0, str, str1);
+	cr_expect_eq(ret, ret1, \
+	"values passed: [%s|%s|%d]\nlibc: %zu\nlibft: %zu", str, app, 0, ret, ret1);
+	free(str);
+	free(str1);
+}
+
+Test(str, strlcat_null, .signal = SIGSEGV) {
+	ft_strlcat(NULL, NULL, 0);
+}
+
+Test(mem, memcmp) {
+	char *str = "0123456789";
+	char *str1 = "01234567";
+	cr_expect_eq(memcmp(str, str, 10), ft_memcmp(str, str, 10), \
+	"values passed: [%s|%s|10]\nlibc: %d\nlibft: %d", str, str, memcmp(str, str, 10), ft_memcmp(str, str, 10));
+	cr_expect_lt(ft_memcmp(str1, str, 10), 0, \
+	"values passed: [%s|%s|10]\nlibc: %d\nlibft: %d", str1, str, memcmp(str1, str, 10), ft_memcmp(str1, str, 10));
+	str = "01234567";
+	str1 = "0123456789";
+	cr_expect_gt(ft_memcmp(str1, str, 10), 0, \
+	"values passed: [%s|%s|10]\nlibc: %d\nlibft: %d", str1, str, memcmp(str1, str, 10), ft_memcmp(str1, str, 10));
+	cr_expect_eq(memcmp(str, str, 0), ft_memcmp(str, str, 0), \
+	"values passed: [%s|%s|0]\nlibc: %d\nlibft: %d", str, str, memcmp(str, str, 0), ft_memcmp(str, str, 0));
+	cr_expect_eq(memcmp(NULL, NULL, 0), ft_memcmp(NULL, NULL, 0), \
+	"values passed: [NULL|NULL|0]\nlibc: %d\nlibft: %d", memcmp(NULL, NULL, 0), ft_memcmp(NULL, NULL, 0));
+}
+
+Test(mem, memcmp_null, .signal = SIGSEGV) {
+	ft_memcmp(NULL, "str", 4);
+}
+
+Test(mem, memchr) {
+	char *mem = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";
+	char c = 'x';
+	cr_expect_str_eq(memchr(mem, c, 26), ft_memchr(mem, c, 26), \
+	"values passed: [%s|%c|%d]\nlibc: %s\nlibft: %s", mem, c, 26, memchr(mem, c, 26), ft_memchr(mem, c, 26));
+	cr_expect_null(ft_memchr(mem, c, 0), \
+	"values passed: [%s|%c|%d]\nlibc: %s\nlibft: %s", mem, c, 0, memchr(mem, c, 0), ft_memchr(mem, c, 0));
+	c = '\0';
+	cr_expect_null(ft_memchr(mem, c, 26), \
+	"values passed: [%s|(null)|%d]\nlibc: %s\nlibft: %s", mem, 26, memchr(mem, c, 26), ft_memchr(mem, c, 26));
+	c = '1';
+	cr_expect_null(ft_memchr(mem, c, 26), \
+	"values passed: [%s|%c|%d]\nlibc: %s\nlibft: %s", mem, c, 26, memchr(mem, c, 26), ft_memchr(mem, c, 26));
+}
+
+Test(mem, memchr_null, .signal = SIGSEGV) {
+	char *mem = NULL;
+	char c = 'x';
+	cr_expect_null(memchr(mem, c, 26), \
+	"ft_memchr does not segfault with input NULL");
+}
+
+Test(mem, memmove) {
+	char *ret = strdup("this_is_the_memory_area");
+	char *ret1 = strdup(ret);
+	char *edit = strdup("copythis");
+	cr_expect_str_eq(memmove(ret, edit, 23), ft_memmove(ret1, edit, 23), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", ret, edit, 23, memmove(ret, edit, 23), ft_memmove(ret1, edit, 23));
+	cr_expect_str_eq(memmove(ret, ret + 5, 15), ft_memmove(ret1, ret1 + 5, 15), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", ret1, ret1 + 5, 15, memmove(ret, ret + 5, 15), ft_memmove(ret1, ret1 + 5, 15));
+	cr_expect_str_eq(memmove(ret + 5, ret, 15), ft_memmove(ret1 + 5, ret1, 15), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", ret1 + 5, ret1, 15, memmove(ret + 5, ret, 15), ft_memmove(ret1 + 5, ret1, 15));
+	cr_expect_str_eq(memmove(edit, NULL, 0), ft_memmove(edit, NULL, 0), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", edit, NULL, 0, memmove(edit, NULL, 0), ft_memmove(edit, NULL, 0));
+	cr_expect_null(ft_memmove(NULL, edit, 0), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", edit, NULL, 0, memmove(edit, NULL, 0), ft_memmove(edit, NULL, 0));
+	free(ret);
+	free(ret1);
+	free(edit);
+}
+
+Test(mem, memmove_null, .signal = SIGSEGV) {
+	char *str = strdup("string");
+	ft_memmove(str, NULL, 6);
+}
+
+Test(mem, memset) {
+	char *str = malloc(10);
+	char *str1 = malloc(10);
+	char c = 'd';
+	int len = 8;
+	char *ret = memset(str, c, len);
+	char *ret1 = ft_memset(str, c, len);
+	cr_expect_str_eq(memset(str, c, len), ft_memset(str, c, len), \
+	"values passed: [%s|%c|%d]\nlibc: %s\nlibft: %s", str, c, len, ret, ret1);
+	len = 0;
+	c = 'a';
+	ret = memset(str, c, len);
+	ret1 = ft_memset(str, c, len);
+	cr_expect_str_eq(ret, ret1, \
+	"values passed: [%s|%c|%d]\nlibc: %s\nlibft: %s", str, c, len, ret, ret1);
+	ret = memset(NULL, c, len);
+	ret1 = ft_memset(NULL, c, len);
+	cr_expect_null(ret1, \
+	"values passed: [%s|%c|%d]\nlibc: %s\nlibft: %s", str, c, len, ret, ret1);
+	len = 10;
+	c = '\0';
+	ret = memset(str, c, len);
+	ret1 = ft_memset(str, c, len);
+	cr_expect_str_eq(ret, ret1, \
+	"values passed: [%s|%c|%d]\nlibc: %s\nlibft: %s", str, c, len, ret, ret1);
+	free(str);
+	free(str1);
+}
+
+Test(mem, memset_null, .signal = SIGSEGV) {
+	ft_memset(NULL, 'c', 9);
+}
+
+Test(mem, bzero) {
+	char str[20] = "epicstring";
+	char str1[20] = "epicstring";
+	int i = 0;
+	int j = 0;
+	int len = 5;
+	bzero(str, (0));
+	ft_bzero(str1, (0));
+	cr_assert_str_eq(str, str1, \
+	"values passed: [%s|%d]:\nlibc: %s\nlibft: %s", str, 0, str, str1);
+	ft_bzero(NULL, 0);
+	bzero(str, len);
+	ft_bzero(str1, len);
+	while (str[i] == '\0')
+		i++;
+	cr_assert_eq(i, len, \
+	"did not set the right amount to 0");
+}
+
+Test(mem, bzero_null, .signal = SIGSEGV) {
+	ft_bzero(NULL, 7);
+}
+
+Test(mem, memcpy) {
+	char *ret = strdup("this_is_the_memory_area");
+	char *ret1 = strdup(ret);
+	char *edit = strdup("copythis");
+	cr_expect_str_eq(memcpy(ret, edit, 23), ft_memcpy(ret1, edit, 23), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", ret, edit, 23, memcpy(ret, edit, 23), ft_memcpy(ret1, edit, 23));
+	cr_expect_str_eq(memcpy(ret, ret + 5, 15), ft_memcpy(ret1, ret1 + 5, 15), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", ret1, ret1 + 5, 15, memcpy(ret, ret + 5, 15), ft_memcpy(ret1, ret1 + 5, 15));
+	cr_expect_str_eq(memcpy(ret + 5, ret, 15), ft_memcpy(ret1 + 5, ret1, 15), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", ret1 + 5, ret1, 15, memcpy(ret + 5, ret, 15), ft_memcpy(ret1 + 5, ret1, 15));
+	cr_expect_str_eq(memcpy(edit, NULL, 0), ft_memcpy(edit, NULL, 0), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", edit, NULL, 0, memcpy(edit, NULL, 0), ft_memcpy(edit, NULL, 0));
+	cr_expect_null(ft_memcpy(NULL, edit, 0), \
+	"values passed: [%s|%s|%d]\nlibc: %s\nlibft: %s", edit, NULL, 0, memcpy(edit, NULL, 0), ft_memcpy(edit, NULL, 0));
+	free(ret);
+	free(ret1);
+	free(edit);
+}
+
+Test(mem, memcpy_null, .signal = SIGSEGV) {
+	char *str = strdup("string");
+	ft_memcpy(str, NULL, 6);
 }
