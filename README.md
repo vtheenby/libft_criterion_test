@@ -1,6 +1,7 @@
 # libft_criterion_test
-tests for libft (criterion required)
-clone next to your libft folder, with libft.a compiled
+please also write your own tests aswell <3 (or, at least in the future)
+tests for libft (criterion required) (look up snaipe criterion github, remember to add the .brew/include and .brew/lib dirs to search path)
+clone next to your libft folder, with libft.a compiled (it won't compile if you don't have the functions, but technically you can comment them out)
 like this:
 
 
@@ -12,9 +13,10 @@ like this:
 
 
 compile with 'gcc libft_criterion_test/test_libft_criterion.c -Llibft -lft -lcriterion
+currently it tests:
 
 PART 1:
-currently it tests:
+
 strlen
 strchr
 strrchr
@@ -28,8 +30,6 @@ isprint
 toupper
 tolower
 strnstr
-
-todo:
 memset
 bzero
 memcpy
@@ -43,7 +43,6 @@ calloc
 strdup
 
 PART 2:
-todo:
 substr
 strjoin
 strtrim
@@ -56,6 +55,7 @@ putendl_fd
 putnbr_fd
 
 BONUS:
+all to be done
 lstnew
 lstadd_front
 lstsize

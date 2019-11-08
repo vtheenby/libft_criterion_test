@@ -6,7 +6,7 @@
 /*   By: lboertie <lboertie@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/06 12:53:18 by lboertie       #+#    #+#                */
-/*   Updated: 2019/11/08 14:04:35 by lboertie      ########   odam.nl         */
+/*   Updated: 2019/11/08 19:57:01 by lboertie      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 #include <criterion/criterion.h>
 #include <limits.h>
 #include <string.h>
+
+static char test(unsigned int i, char c) {
+	i = 0;
+	return (toupper(c));
+}
+
+// PART 1:
 
 Test(isx, isalpha) {
 	int	c;
@@ -501,7 +508,7 @@ Test(mem, memccpy_null_dst, .signal = SIGSEGV) {
 
 }
 
-Test(alloc, calloc) {
+Test(stralloc, calloc) {
 	char *str = ft_calloc(5, 5);
 	char *str1 = calloc(5, 5);
 	int cool = 1;
@@ -520,7 +527,7 @@ Test(alloc, calloc) {
 	free(str1);
 }
 
-Test(alloc, strdup) {
+Test(stralloc, strdup) {
 	char *dup = "duplicate this";
 	char *dup1 = "";
 	char *str1 = ft_strdup(dup);
@@ -537,6 +544,250 @@ Test(alloc, strdup) {
 	free(str2);
 }
 
-Test(alloc, strdup_null, .signal = SIGSEGV) {
+Test(stralloc, strdup_null, .signal = SIGSEGV) {
 	char *str = ft_strdup(NULL);
 }
+
+// PART 2:
+
+Test(stralloc, substr) {
+	int start = 0;
+	int len = 6;
+	char *str = "please6make1some6substrings";
+	char *str1 = ft_substr(str, start, len);
+	cr_expect_str_eq(str1, "please", \
+	"values passed: [%s|%d|%d]\nexpected: %s\nlibft: %s", str, start, len, "please", str1);
+	free(str1);
+	start = 6;
+	len = 1;
+	str1 = ft_substr(str, start, len);
+	cr_expect_str_eq(str1, "6", \
+	"values passed: [%s|%d|%d]\nexpected: %s\nlibft: %s", str, start, len, "6", str1);
+	free(str1);
+	start = 6;
+	len = 0;
+	str1 = ft_substr(str, start, len);
+	cr_expect_str_eq(str1, "", \
+	"values passed: [%s|%d|%d]\nexpected: %s\nlibft: %s", str, start, len, "", str1);
+	free(str1);
+	start = 26;
+	len = 5;
+	str1 = ft_substr(str, start, len);
+	cr_expect_str_eq(str1, "s", \
+	"values passed: [%s|%d|%d]\nexpected: %s\nlibft: %s", str, start, len, "s", str1);
+	free(str1);
+	str1 = ft_substr("", 0, 5);
+	cr_expect_str_empty(str1, \
+	"values passed: [%s|%d|%d]\nexpected: %s\nlibft: %s", "", 0, 5, "s", str1);
+	free(str1);
+	str1 = ft_substr(NULL, 0, 5);
+	cr_expect_null(str1, \
+	"values passed: [%s|%d|%d]\nexpected: %s\nlibft: %s", "", 0, 5, "(null)", str1);
+	free(str1);
+}
+
+Test(stralloc, strjoin) {
+	char *str = "you're ";
+	char *str1 = "valid <3";
+	char *expected = "you're valid <3";
+	char *joined = ft_strjoin(str, str1);
+	cr_expect_str_eq(joined, expected, \
+	"values passed: [%s|%s]\nexpected: %s\nlibft: %s", str, str1, expected, joined);
+	free(joined);
+	expected = "valid <3";
+	joined = ft_strjoin("", str1);
+	cr_expect_str_eq(joined, expected, \
+	"values passed: [%s|%s]\nexpected: %s\nlibft: %s", "", str1, expected, joined);
+	free(joined);
+	expected = "you're ";
+	joined = ft_strjoin(str, "");
+	cr_expect_str_eq(joined, expected, \
+	"values passed: [%s|%s]\nexpected: %s\nlibft: %s", str, str1, expected, joined);
+	free(joined);
+	expected = "";
+	joined = ft_strjoin("", "");
+	cr_expect_str_eq(joined, expected, \
+	"values passed: [%s|%s]\nexpected: %s\nlibft: %s", str, str1, expected, joined);
+	free(joined);
+	cr_expect_null(ft_strjoin(NULL, "aaa"), \
+	"does not protect against null input");
+	cr_expect_null(ft_strjoin("aaa", NULL), \
+	"does not protect against null input");
+	cr_expect_null(ft_strjoin(NULL, NULL), \
+	"does not protect against null input");
+}
+
+Test(stralloc, strtrim) {
+	char *set = "abcd";
+	char *totrim = "abcbbcbabcbThis will be leftbabbcbcbadd";
+	char *expected = "This will be left";
+	char *trimmed = ft_strtrim(totrim, set);
+	cr_expect_str_eq(expected, trimmed, \
+	"values passed: [%s|%s]\nexpected: %s\nlibft: %s", totrim, set, expected, trimmed);
+	free(trimmed);
+	set = "";
+	trimmed = ft_strtrim(totrim, set);
+	expected = totrim;
+	cr_expect_str_eq(expected, trimmed, \
+	"values passed: [%s|%s]\nexpected: %s\nlibft: %s", totrim, set, expected, trimmed);
+	free(trimmed);
+	set = "123";
+	trimmed = ft_strtrim(totrim, set);
+	cr_expect_str_eq(expected, trimmed, \
+	"values passed: [%s|%s]\nexpected: %s\nlibft: %s", totrim, set, expected, trimmed);
+	free(trimmed);
+	cr_expect_null(ft_strtrim(NULL, "123"), \
+	"does not protect against null input");
+	cr_expect_null(ft_strtrim("123", NULL), \
+	"does not protect against null input");
+}
+
+Test(stralloc, split) {
+	char *tosplit = "     this    string  will     be split     !   ";
+	char delim = ' ';
+	char expected[7][50] = {"this", "string", "will", "be", "split", "!"};
+	char **split = ft_split(tosplit, delim);
+	int i = 0;
+	while (i < 6)
+	{
+		cr_assert_str_eq(expected[i], split[i], \
+		"values passed: [%s|%c] (curr_word = %d)\nexpected: %s\nlibft: %s", tosplit, delim, i, expected[i], split[i]);
+		i++;
+	}
+	i++;
+	cr_expect_null(split[i], \
+	"did not set the last pointer to NULL");
+	i = 0;
+	while (split[i])
+	{
+		if (split[i])
+			free(split[i]);
+		i++;
+	}
+	free(split);
+	cr_expect_null(ft_split(NULL, ' '), \
+	"does not protect against null input");
+	split = ft_split(tosplit, '\0');
+	cr_expect_str_eq(tosplit, split[0], \
+	"does not return full string in case of null byte delimiter");
+	cr_expect_null(split[1], \
+	"did not set the last pointer to NULL (in case of one word)");
+	i = 0;
+	while (split[i])
+	{
+		if (split[i])
+			free(split[i]);
+		i++;
+	}
+	free(split);
+	split = ft_split(tosplit, 'Z');
+	cr_expect_str_eq(tosplit, split[0], \
+	"does not work if delimiter not in string to split");
+	cr_expect_null(split[1], \
+	"did not set the last pointer to NULL (in case of one word)");
+	i = 0;
+	while (split[i])
+	{
+		if (split[i])
+			free(split[i]);
+		i++;
+	}
+	free(split);
+}
+
+Test(stralloc, strmapi) {
+	char *str = "*string intensifies*";
+	char *expected = "*STRING INTENSIFIES*";
+	char *ret = ft_strmapi(str, &test);
+	cr_assert_str_eq(ret, expected, \
+	"values passed [%s|%s]\nexpected: %s\nlibft: %s", str, "&toupper", expected, ret);
+	free(ret);
+	cr_expect_null(ft_strmapi(NULL, &test), \
+	"does not protect against null input arg0");
+	cr_expect_null(ft_strmapi(str, NULL), \
+	"does not protect against null input");
+}
+
+Test(output, putchar_fd) {
+	char buf[1];
+	int p[2];
+	char *c = "a";
+	pipe(p);
+	ft_putchar_fd(c[0], p[1]);
+	read(p[0], buf, 1);
+	cr_expect(strcmp(buf, c), \
+	"your putchar does not put the right char");
+}
+
+Test(output, putstr_fd) {
+	char buf[11];
+	int p[2];
+	char *c = "0123456789";
+	pipe(p);
+	ft_putstr_fd(c, p[1]);
+	read(p[0], buf, 11);
+	cr_expect_str_eq(buf, c, \
+	"your putstr does not put the correct string");
+}
+
+Test(output, putendl_fd) {
+	char buf[12];
+	int p[2];
+	char *c = "0123456789";
+	pipe(p);
+	ft_putstr_fd(c, p[1]);
+	read(p[0], buf, 12);
+	c = "0123456789\n";
+	cr_expect(strcmp(buf, c), \
+	"your putendl did not put a newline");
+}
+
+Test(output, putnbr_fd) {
+	char buf[11];
+	int p[2];
+	int n = INT_MIN;
+	char *c = "-2147483648";
+	pipe(p);
+	ft_putnbr_fd(n, p[1]);
+	read(p[0], buf, 11);
+	cr_expect(strcmp(buf, c), \
+	"your putnbr does not handle min int");
+	c = "-420";
+	n = -420;
+	ft_putnbr_fd(n, p[1]);
+	read(p[0], buf, 4);
+	cr_expect(strcmp(buf, c), \
+	"your putnbr does not handle negative numbers");
+	c = "420";
+	n = 420;
+	ft_putnbr_fd(n, p[1]);
+	read(p[0], buf, 4);
+	cr_expect(strcmp(buf, c), \
+	"your putnbr does not handle regular input");
+	c = "0";
+	n = 0;
+	ft_putnbr_fd(n, p[1]);
+	read(p[0], buf, 4);
+	cr_expect(strcmp(buf, c), \
+	"your putnbr does not handle '0' input");
+}
+
+// BONUS:
+
+Test(lst, lstnew) {}
+
+Test(lst, lstadd_front) {}
+
+Test(lst, lstsize) {}
+
+Test(lst, lstlast) {}
+
+Test(lst, lstadd_back) {}
+
+Test(lst, lstdelone) {}
+
+Test(lst, lstclear) {}
+
+Test(lst, lstiter) {}
+
+Test(lst, lstmap) {}
