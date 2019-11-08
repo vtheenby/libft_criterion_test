@@ -6,7 +6,7 @@
 /*   By: lboertie <lboertie@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/06 12:53:18 by lboertie       #+#    #+#                */
-/*   Updated: 2019/11/07 16:44:15 by lboertie      ########   odam.nl         */
+/*   Updated: 2019/11/08 14:04:35 by lboertie      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 Test(isx, isalpha) {
 	int	c;
 
-	c = 0;
+	c = -10;
 	while (c <= 130)
 	{
 		cr_expect_eq(isalpha(c), ft_isalpha(c), \
@@ -30,7 +30,7 @@ Test(isx, isalpha) {
 Test(isx, isalnum) {
 	int	c;
 
-	c = 0;
+	c = -10;
 	while (c <= 130)
 	{
 		cr_expect_eq(isalnum(c), ft_isalnum(c), \
@@ -453,7 +453,90 @@ Test(mem, memcpy_null, .signal = SIGSEGV) {
 	ft_memcpy(str, NULL, 6);
 }
 
+Test(mem, memccpy) {
+	char dst[21] = "0123456789abcdefghij";
+	char dst1[21] = "0123456789abcdefghij";
+	char src[21] = "abcdefghij0123456789";
+	char *ret = ft_memccpy(dst1, src, 'A', 4);
+	char *ret1 = memccpy(dst, src, 'A', 4);
+	cr_expect_null(ret, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", "0123456789abcdefghij", src, 'A', 4, ret1, ret);
+	cr_expect_str_eq(dst, dst1, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", "0123456789abcdefghij", src, 'A', 4, dst, dst1);
+	ret = ft_memccpy(dst1, src, 'f', 5);
+	ret1 = memccpy(dst, src, 'f', 5);
+	cr_expect_null(ret, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", "0123456789abcdefghij", src, 'f', 5, ret1, ret);
+	cr_expect_str_eq(dst, dst1, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", "0123456789abcdefghij", src, 'f', 5, dst, dst1);
+	ret = ft_memccpy(dst1, src, 'f', 8);
+	ret1 = memccpy(dst, src, 'f', 8);
+	cr_expect_str_eq(ret, ret1, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", "0123456789abcdefghij", src, 'f', 8, ret1, ret);
+	cr_expect_str_eq(dst, dst1, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", "0123456789abcdefghij", src, 'f', 8, dst, dst1);
+	ret = ft_memccpy(NULL, src, 'f', 0);
+	ret1 = memccpy(NULL, src, 'f', 0);
+	cr_expect_null(ret, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", NULL, src, 'f', 0, ret1, ret);
+	cr_expect_str_eq(dst, dst1, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", NULL, src, 'f', 0, dst, dst1);
+	ret = ft_memccpy(src, NULL, 'f', 0);
+	ret1 = memccpy(src, NULL, 'f', 0);
+	cr_expect_null(ret, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", src, NULL, 'f', 0, ret1, ret);
+	cr_expect_str_eq(dst, dst1, \
+	"values passed: [%s|%s|%c|%d]\nlibc: %s\nlibft: %s", src, NULL, 'f', 0, dst, dst1);
+}
 
-Test(mem, memccpy, .signal = SIGSEGV) {
-	ft_memccpy(NULL, NULL, 'a', 6);
+Test(mem, memccpy_null_src, .signal = SIGSEGV) {
+	char str[40] = "very cool";
+	ft_memccpy(NULL, str, 'a', 6);
+
+}
+
+Test(mem, memccpy_null_dst, .signal = SIGSEGV) {
+	char str[40] = "very cool";
+	ft_memccpy(str, NULL, 'a', 6);
+
+}
+
+Test(alloc, calloc) {
+	char *str = ft_calloc(5, 5);
+	char *str1 = calloc(5, 5);
+	int cool = 1;
+	int i = 0;
+	while (i > 25)
+	{
+		if (str[i] != 0)
+			cool = 0;
+		i++;
+	}
+	cr_expect(cool, \
+	"values passed: [%d|%d]\n libc: %s\n libft: %s", 5, 5, str, str1);
+	cr_expect_str_eq(str1, str, \
+	"values passed: [%d|%d]\n libc: %s\n libft: %s", 5, 5, str, str1);
+	free(str);
+	free(str1);
+}
+
+Test(alloc, strdup) {
+	char *dup = "duplicate this";
+	char *dup1 = "";
+	char *str1 = ft_strdup(dup);
+	char *str2 = strdup(dup);
+	cr_assert_str_eq(str1, str2, \
+	"value passed: [%s]\nlibc: %s\nlibft: %s", dup, str1, str2);
+	free(str1);
+	free(str2);
+	str1 = ft_strdup(dup1);
+	str2 = strdup(dup1);
+	cr_assert_str_eq(str1, str2, \
+	"value passed: [%s]\nlibc: %s\nlibft: %s", dup1, str1, str2);
+	free(str1);
+	free(str2);
+}
+
+Test(alloc, strdup_null, .signal = SIGSEGV) {
+	char *str = ft_strdup(NULL);
 }
