@@ -6,11 +6,11 @@
 /*   By: lboertie <lboertie@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/06 12:53:18 by lboertie       #+#    #+#                */
-/*   Updated: 2019/11/08 19:57:01 by lboertie      ########   odam.nl         */
+/*   Updated: 2019/11/11 16:01:23 by lboertie      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libft.h>
+#include "libft.h"
 #include <criterion/criterion.h>
 #include <limits.h>
 #include <string.h>
@@ -174,27 +174,6 @@ Test(convert, atoi) {
 
 Test(convert, atoi_null, .signal = SIGSEGV) {
 	cr_expect(ft_atoi(NULL), "ft_atoi does not segfault with input NULL");
-}
-
-Test(convert, itoa) {
-	int n = 0;
-	cr_expect_str_eq("0", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
-	n = MIN_INT;
-	cr_expect_str_eq("-2147483648", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
-	n = INT_MAX;
-	cr_expect_str_eq("2147483647", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
-	n = -45390001;
-	cr_expect_str_eq("-45390001", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
-	n = 45390001;
-	cr_expect_str_eq("45390001", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
-	n = 1000;
-	cr_expect_str_eq("1000", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
 }
 
 Test(str, strchr) {
@@ -550,6 +529,27 @@ Test(stralloc, strdup_null, .signal = SIGSEGV) {
 
 // PART 2:
 
+Test(convert, itoa) {
+	int n = 0;
+	cr_expect_str_eq("0", ft_itoa(n), \
+	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	n = MIN_INT;
+	cr_expect_str_eq("-2147483648", ft_itoa(n), \
+	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	n = INT_MAX;
+	cr_expect_str_eq("2147483647", ft_itoa(n), \
+	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	n = -45390001;
+	cr_expect_str_eq("-45390001", ft_itoa(n), \
+	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	n = 45390001;
+	cr_expect_str_eq("45390001", ft_itoa(n), \
+	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	n = 1000;
+	cr_expect_str_eq("1000", ft_itoa(n), \
+	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+}
+
 Test(stralloc, substr) {
 	int start = 0;
 	int len = 6;
@@ -774,20 +774,181 @@ Test(output, putnbr_fd) {
 
 // BONUS:
 
-Test(lst, lstnew) {}
+Test(lst, lstnew) {
+	t_list *cool;
 
-Test(lst, lstadd_front) {}
+	cool = ft_lstnew("amazing");
+	cr_expect_null(cool->next, \
+	"your lstnew does not set next to null");
+	cr_expect_str_eq(cool->content, "amazing", \
+	"lstnew does not set the content correctly");
+	free(cool);
+	cool = ft_lstnew((void*)0);
+	cr_expect_null(cool->next, \
+	"your lstnew does not set next to null");
+	cr_expect_null(cool->content, \
+	"lstnew does not set the content correctly if content given is null");
+	free(cool);
+}
 
-Test(lst, lstsize) {}
+Test(lst, lstadd_front) {
+	t_list *head;
+	t_list *new;
+	char *str;
+	char *str1;
 
-Test(lst, lstlast) {}
+	str = "will be at the front";
+	str1 = "should be at the back";
+	new = ft_lstnew(str);
+	head = ft_lstnew(str1);
+	ft_lstadd_front(&head, new);
+	cr_expect_str_eq(head->content, str, \
+	"values passed: &head, new\nhead->content: %s\nexpected: %s", head->content, str);
+	cr_expect_str_eq(head->next->content, str1, \
+	"values passed: &head, new\nhead->content: %s\nexpected: %s", head->next->content, str1);
+	free(head->next);
+	free(head);
+}
 
-Test(lst, lstadd_back) {}
+Test(lst, lstsize) {
+	t_list *head;
+	t_list *new;
+	t_list *store;
+	char *str;
+	char *str1;
+	int	i;
 
-Test(lst, lstdelone) {}
+	str = "will be at the front";
+	str1 = "should be at the back";
+	new = ft_lstnew(str);
+	store = new;
+	while (new)
+	{
+		i++;
+		new = new->next;
+	}
+	cr_expect_eq(i, 1, \
+	"lstsize does not work with one list node");
+	head = ft_lstnew(str1);
+	ft_lstadd_front(&head, store);
+	i = 0;
+	while (head)
+	{
+		i++;
+		head = head->next;
+	}
+	cr_expect_eq(i, 2, \
+	"lstsize does not work on basic input");
+	free(store);
+	free(head);
+}
 
-Test(lst, lstclear) {}
+Test(lst, lstlast) {
+	t_list *head;
+	t_list *new;
+	t_list *last;
+	char *str;
+	char *str1;
 
-Test(lst, lstiter) {}
+	str = "will be at the front";
+	str1 = "should be at the back";
+	new = ft_lstnew(str);
+	head = ft_lstnew(str1);
+	ft_lstadd_front(&head, new);
+	last = ft_lstlast(head);
+	cr_expect_null(last->next, \
+	"lstlast return->next is not null");
+	cr_expect_str_eq(str1, last->content, \
+	"lstlast does not return the right node");
+}
 
-Test(lst, lstmap) {}
+Test(lst, lstadd_back) {
+	t_list *head;
+	t_list *new;
+	char *str;
+	char *str1;
+
+	str = "will be at the front";
+	str1 = "should be at the back";
+	new = ft_lstnew(str1);
+	head = ft_lstnew(str);
+	ft_lstadd_back(&head, new);
+	cr_expect_str_eq(head->content, str, \
+	"values passed: &head, new\nhead->content: %s\nexpected: %s", head->content, str);
+	cr_expect_str_eq(head->next->content, str1, \
+	"values passed: &head, new\nhead->content: %s\nexpected: %s", head->next->content, str1);
+	free(head->next);
+	free(head);
+}
+
+void	wordupper(void *thing)
+{
+	char *str;
+	int i;
+
+	i = 0;
+	str = (char *)thing;
+	while(str[i])
+	{
+		str[i] = ft_toupper(str[i]);
+		i++;
+	}
+	thing = str;
+}
+
+Test(lst, lstiter) {
+	t_list *head;
+	t_list *new;
+	char *str;
+	char *str1;
+
+	str = strdup("will be at the front");
+	str1 = strdup("should be at the back");
+	new = ft_lstnew(str1);
+	head = ft_lstnew(str);
+	ft_lstadd_back(&head, new);
+	ft_lstiter(head, &wordupper);
+	cr_expect_str_eq(head->content, "WILL BE AT THE FRONT", \
+	"head, &wordupper\nexpected: %s\nactual: %s", "WILL BE AT THE FRONT", head->content);
+	cr_expect_str_eq(head->next->content,  "SHOULD BE AT THE BACK", \
+	"head, &wordupper\nexpected: %s\nactual: %s", "SHOULD BE AT THE BACK", head->next->content);
+	ft_lstclear(&head, &free);
+}
+
+void	*wordupper_ret(void *thing)
+{
+	char *str;
+	char *ret;
+	int i;
+
+	i = 0;
+	str = (char *)thing;
+	ret = malloc(sizeof(char *) * ft_strlen(thing) + 1);
+	while(str[i])
+	{
+		ret[i] = ft_toupper(str[i]);
+		i++;
+	}
+	return ((void *)ret);
+}
+
+Test(lst, lstmap) {
+	t_list *head;
+	t_list *new;
+	t_list *dup;
+	char *str;
+	char *str1;
+
+	str = strdup("will be at the front");
+	str1 = strdup("should be at the back");
+	new = ft_lstnew(str1);
+	head = ft_lstnew(str);
+	ft_lstadd_back(&head, new);
+	dup = ft_lstmap(head, &wordupper_ret, &free);
+	cr_expect_str_eq(wordupper_ret(head->content), dup->content, \
+	"head->content, dup->content\nexpected: %s\nactual: %s", head->content, dup->content);
+	cr_expect_str_eq(wordupper_ret(head->next->content),  dup->next->content, \
+	"head, &ft_strdup\nexpected: %s\nactual: %s", head->next->content, dup->next->content);
+	ft_lstclear(&dup, &free);
+	ft_lstclear(&head, &free);
+}
