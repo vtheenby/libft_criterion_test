@@ -6,7 +6,7 @@
 /*   By: lboertie <lboertie@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/06 12:53:18 by lboertie       #+#    #+#                */
-/*   Updated: 2019/11/11 16:01:23 by lboertie      ########   odam.nl         */
+/*   Updated: 2019/11/12 16:20:19 by lboertie      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -580,6 +580,10 @@ Test(stralloc, substr) {
 	cr_expect_str_empty(str1, \
 	"values passed: [%s|%d|%d]\nexpected: %s\nlibft: %s", "", 0, 5, "s", str1);
 	free(str1);
+	str1 = ft_substr("0123557", 10, 5);
+	cr_expect_str_empty(str1, \
+	"values passed: [%s|%d|%d]\nexpected: %s\nlibft: %s", "", 0, 5, "s", str1);
+	free(str1);
 	str1 = ft_substr(NULL, 0, 5);
 	cr_expect_null(str1, \
 	"values passed: [%s|%d|%d]\nexpected: %s\nlibft: %s", "", 0, 5, "(null)", str1);
@@ -929,7 +933,7 @@ void	*wordupper_ret(void *thing)
 		ret[i] = ft_toupper(str[i]);
 		i++;
 	}
-	return ((void *)ret);
+	return (ret);
 }
 
 Test(lst, lstmap) {
@@ -938,6 +942,7 @@ Test(lst, lstmap) {
 	t_list *dup;
 	char *str;
 	char *str1;
+	char *str2;
 
 	str = strdup("will be at the front");
 	str1 = strdup("should be at the back");
@@ -945,10 +950,14 @@ Test(lst, lstmap) {
 	head = ft_lstnew(str);
 	ft_lstadd_back(&head, new);
 	dup = ft_lstmap(head, &wordupper_ret, &free);
-	cr_expect_str_eq(wordupper_ret(head->content), dup->content, \
+	str2 = wordupper_ret(head->content);
+	cr_expect_str_eq(str2, dup->content, \
 	"head->content, dup->content\nexpected: %s\nactual: %s", head->content, dup->content);
-	cr_expect_str_eq(wordupper_ret(head->next->content),  dup->next->content, \
+	free(str2);
+	str2 = wordupper_ret(head->next->content);
+	cr_expect_str_eq(str2,  dup->next->content, \
 	"head, &ft_strdup\nexpected: %s\nactual: %s", head->next->content, dup->next->content);
+	free(str2);
 	ft_lstclear(&dup, &free);
 	ft_lstclear(&head, &free);
 }
