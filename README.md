@@ -15,53 +15,5 @@ like this:
 compile with 'gcc libft_criterion_test/test_libft_criterion.c -Llibft -lft -lcriterion
 currently it tests:
 
-PART 1:
 
-strlen
-strchr
-strrchr
-strncmp
-atoi
-isalpha
-isdigit
-isalnum
-isascii
-isprint
-toupper
-tolower
-strnstr
-memset
-bzero
-memcpy
-memccpy
-memmove
-memchr
-memcmp
-strlcpy
-strlcat
-calloc
-strdup
-
-PART 2:
-substr
-strjoin
-strtrim
-split
-itoa
-strmapi
-putchar_fd
-putstr_fd
-putendl_fd
-putnbr_fd
-
-BONUS:
-all to be done
-lstnew
-lstadd_front
-lstsize
-lstlast
-lstadd_back
-lstdelone
-lstclear
-lstiter
-lstmap
+heckin all of em
