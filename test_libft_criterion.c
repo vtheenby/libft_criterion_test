@@ -6,7 +6,7 @@
 /*   By: lboertie <lboertie@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/06 12:53:18 by lboertie       #+#    #+#                */
-/*   Updated: 2019/11/12 17:00:35 by lboertie      ########   odam.nl         */
+/*   Updated: 2019/11/14 16:00:00 by lboertie      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -531,23 +531,37 @@ Test(stralloc, strdup_null, .signal = SIGSEGV) {
 
 Test(convert, itoa) {
 	int n = 0;
-	cr_expect_str_eq("0", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
-	n = MIN_INT;
-	cr_expect_str_eq("-2147483648", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	char *ret;
+
+	ret = ft_itoa(n);
+	cr_expect_str_eq("0", ret, \
+	"value passed: [%d]\nlibft: %s", n, ret);
+	free(ret);
+	n = INT_MIN;
+	ret = ft_itoa(n);
+	cr_expect_str_eq("-2147483648", ret, \
+	"value passed: [%d]\nlibft: %s", n, ret);
+	free(ret);
 	n = INT_MAX;
-	cr_expect_str_eq("2147483647", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	ret = ft_itoa(n);
+	cr_expect_str_eq("2147483647", ret, \
+	"value passed: [%d]\nlibft: %s", n, ret);
+	free(ret);
 	n = -45390001;
-	cr_expect_str_eq("-45390001", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	ret = ft_itoa(n);
+	cr_expect_str_eq("-45390001", ret, \
+	"value passed: [%d]\nlibft: %s", n, ret);
+	free(ret);
 	n = 45390001;
-	cr_expect_str_eq("45390001", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	ret = ft_itoa(n);
+	cr_expect_str_eq("45390001", ret, \
+	"value passed: [%d]\nlibft: %s", n, ret);
+	free(ret);
 	n = 1000;
-	cr_expect_str_eq("1000", ft_itoa(n), \
-	"value passed: [%d]\nlibft: %s", n, ft_itoa(n));
+	ret = ft_itoa(n);
+	cr_expect_str_eq("1000", ret, \
+	"value passed: [%d]\nlibft: %s", n, ret);
+
 }
 
 Test(stralloc, substr) {
